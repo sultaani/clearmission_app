@@ -4,12 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint .",
-    "test": "tsx tests/integration.test.ts && tsx tests/deletedRecords.test.ts && tsx tests/offlineSync.test.ts && tsx tests/documents.test.ts && tsx tests/offlineQueue.test.ts",
-    "test:security": "tsx tests/security.test.ts"
+  "dev": "next dev",
+  "build": "next build",
+  "start": "next start",
+  "lint": "eslint .",
+  "test": "tsx tests/integration.test.ts && tsx tests/deletedRecords.test.ts && tsx tests/offlineSync.test.ts && tsx tests/documents.test.ts && tsx tests/offlineQueue.test.ts",
+  "test:security": "tsx tests/security.test.ts"
   },
   "keywords": [],
   "author": "",
