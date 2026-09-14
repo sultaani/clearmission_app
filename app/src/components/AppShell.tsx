@@ -3,9 +3,10 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/AuthContext';
-import { NAV_ITEMS, SignOut } from './navItems';
+import { NAV_ITEMS, SignOut, getMobileNavSplit } from './navItems';
 import clsx from 'clsx';
 import { useEffect } from 'react';
+import { DotsThreeCircle } from '@phosphor-icons/react/dist/ssr';
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { user, loading, logout } = useAuth();
@@ -22,7 +23,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   if (!user) return null;
 
   const items = NAV_ITEMS.filter((i) => i.roles.includes(user.role));
-  const mobileItems = items.filter((i) => i.primary).slice(0, 5);
+  // Bottom nav is always exactly 4 real tabs + a static "More" tab — never 5
+  // real items sliced to fit, so "More" is a permanent, predictable 5th
+  // position rather than something that only appears once a role has too
+  // many primary items.
+  const { primary: mobileItems } = getMobileNavSplit(user.role);
 
   return (
     <div className="min-h-screen bg-white lg:flex">
@@ -73,7 +78,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <main className="mx-auto max-w-6xl px-4 py-6 lg:px-8 lg:py-8">{children}</main>
       </div>
 
-      {/* Mobile bottom nav — PRD #84 */}
+      {/* Mobile bottom nav — PRD #84: 4 real tabs + a permanent More tab */}
       <nav className="fixed inset-x-0 bottom-0 z-10 flex border-t border-mist-border bg-white lg:hidden">
         {mobileItems.map((item) => {
           const active = pathname.startsWith(item.href);
@@ -92,6 +97,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </Link>
           );
         })}
+        <Link
+          href="/more"
+          className={clsx(
+            'flex flex-1 flex-col items-center gap-0.5 py-2.5 text-xs font-medium transition-colors duration-200',
+            pathname === '/more' ? 'text-forest-700' : 'text-ink/50'
+          )}
+        >
+          <DotsThreeCircle size={22} weight={pathname === '/more' ? 'fill' : 'regular'} aria-hidden="true" />
+          More
+        </Link>
       </nav>
     </div>
   );
